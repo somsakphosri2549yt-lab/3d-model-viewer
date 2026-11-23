@@ -99,7 +99,6 @@
       filter: brightness(1.08);
     }
 
-    /* Base URL Bar */
     .url-config {
       background: rgba(30, 41, 59, 0.65);
       border: 1px solid var(--border);
@@ -130,10 +129,9 @@
       font-size: 0.88rem;
     }
 
-    /* QR Grid */
     .qr-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
       gap: 18px;
     }
 
@@ -210,7 +208,6 @@
       padding: 8px 10px;
     }
 
-    /* Print A4 Styles */
     @media print {
       body {
         background: #ffffff !important;
@@ -279,9 +276,9 @@
     const ITEMS = [
       {
         id: "all",
-        badge: "หน้าหลัก (รวมทั้ง 4 โมเดล)",
+        badge: "หน้าหลัก (รวม 2 โมเดล)",
         title: "รวมโมเดล 3 มิติทั้งหมด (3D Gallery)",
-        desc: "สแกนเพื่อเข้าสู่หน้าหลักและกดเลือกสลับดูได้ทั้ง 4 โมเดลในลิงก์เดียว",
+        desc: "สแกนเพื่อเข้าสู่หน้าหลักและกดเลือกสลับดูได้ทั้งเสาไฟฟ้าริมถนนและอาคารวิศวกรรมไฟฟ้า",
         query: ""
       },
       {
@@ -292,25 +289,11 @@
         query: "?model=utility_pole"
       },
       {
-        id: "lineman_viaduct",
-        badge: "โมเดลที่ 2",
-        title: "ช่างไฟฟ้าปฏิบัติงานและสะพานลอย",
-        desc: "จำลองการปฏิบัติงานของช่างไฟฟ้าพร้อมอุปกรณ์นิรภัยบนเสาไฟฟ้า",
-        query: "?model=lineman_viaduct"
-      },
-      {
         id: "ee_building",
-        badge: "โมเดลที่ 3",
+        badge: "โมเดลที่ 2",
         title: "อาคารวิศวกรรมไฟฟ้า",
         desc: "โมเดลสถาปัตยกรรมอาคารเรียนและปฏิบัติการวิศวกรรมไฟฟ้าแบบ 3 มิติ",
         query: "?model=ee_building"
-      },
-      {
-        id: "electrician",
-        badge: "โมเดลที่ 4",
-        title: "ตัวละครช่างไฟฟ้า (ชุดอุปกรณ์ PPE)",
-        desc: "ชุดปฏิบัติงานช่างไฟฟ้า หมวกนิรภัย แว่นเซฟตี้ ถุงมือ และเข็มขัดเครื่องมือ",
-        query: "?model=electrician"
       }
     ];
 
@@ -360,7 +343,6 @@
         });
       });
 
-      // Attach download handlers
       document.querySelectorAll('[data-dl]').forEach(btn => {
         btn.addEventListener('click', () => {
           const id = btn.getAttribute('data-dl');

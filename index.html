@@ -4,13 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>3D Model Viewer - ระบบดูโมเดล 3 มิติ 360°</title>
-  <!-- Google Fonts: Sarabun & Prompt -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&family=Sarabun:wght@400;500;600&display=swap" rel="stylesheet">
-  <!-- Official Google Model Viewer -->
   <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js"></script>
-  <!-- Pure Client-Side QR Code Generator -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <style>
     :root {
@@ -39,7 +36,6 @@
       font-family: 'Prompt', 'Sarabun', sans-serif;
     }
 
-    /* Main 3D Canvas */
     model-viewer {
       width: 100vw;
       height: 100vh;
@@ -48,7 +44,6 @@
       outline: none;
     }
 
-    /* Top Minimal Header */
     .top-bar {
       position: fixed;
       top: 14px;
@@ -102,7 +97,6 @@
       line-height: 1.4;
     }
 
-    /* Right Floating Action Buttons */
     .top-actions {
       pointer-events: auto;
       display: flex;
@@ -146,7 +140,6 @@
       transition: opacity 0.25s ease, transform 0.25s ease;
     }
 
-    /* Minimal Mode Hiding */
     body.minimal-mode .model-info-card,
     body.minimal-mode .tools-group,
     body.minimal-mode .touch-hint {
@@ -155,7 +148,6 @@
       transform: translateY(-8px);
     }
 
-    /* Bottom Model Switcher Bar */
     .bottom-bar {
       position: fixed;
       bottom: 16px;
@@ -163,7 +155,7 @@
       transform: translateX(-50%);
       z-index: 20;
       width: calc(100vw - 24px);
-      max-width: 680px;
+      max-width: 480px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -185,8 +177,8 @@
     .switcher-dock {
       pointer-events: auto;
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 6px;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
       width: 100%;
       background: var(--bg-panel);
       backdrop-filter: blur(14px);
@@ -201,17 +193,16 @@
       background: transparent;
       border: 1px solid transparent;
       color: var(--text-sub);
-      padding: 8px 6px;
+      padding: 10px 8px;
       border-radius: 11px;
       font-family: 'Prompt', sans-serif;
-      font-size: 0.78rem;
+      font-size: 0.85rem;
       font-weight: 500;
       cursor: pointer;
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 3px;
+      gap: 6px;
       text-align: center;
       transition: all 0.2s ease;
       line-height: 1.2;
@@ -233,7 +224,6 @@
       box-shadow: 0 0 15px rgba(56, 189, 248, 0.2);
     }
 
-    /* Loading Overlay */
     .loading-overlay {
       position: fixed;
       inset: 0;
@@ -273,7 +263,7 @@
     }
 
     .progress-track {
-      width: 200px;
+      width: 220px;
       height: 6px;
       background: rgba(255, 255, 255, 0.12);
       border-radius: 999px;
@@ -288,10 +278,9 @@
       transition: width 0.15s ease;
     }
 
-    /* AR Button inside model-viewer */
     .ar-btn {
       position: fixed;
-      bottom: 105px;
+      bottom: 95px;
       right: 16px;
       background: linear-gradient(135deg, #0284c7, #2563eb);
       color: #fff;
@@ -306,7 +295,6 @@
       z-index: 25;
     }
 
-    /* QR Code Modal */
     .modal-backdrop {
       position: fixed;
       inset: 0;
@@ -405,23 +393,21 @@
     @media (max-width: 480px) {
       .model-title { font-size: 0.95rem; }
       .model-desc { font-size: 0.78rem; }
-      .model-tab { font-size: 0.72rem; padding: 7px 4px; }
+      .model-tab { font-size: 0.78rem; padding: 9px 6px; }
       .icon-btn span.btn-label { display: none; }
     }
   </style>
 </head>
 <body>
 
-  <!-- Top Bar: Info + Controls -->
   <div class="top-bar">
     <div class="model-info-card">
-      <span class="model-badge" id="modelBadge">MODEL 1 / 4</span>
+      <span class="model-badge" id="modelBadge">MODEL 1 / 2</span>
       <div class="model-title" id="modelTitle">กำลังโหลดโมเดล...</div>
       <div class="model-desc" id="modelDesc">ใช้ 1 นิ้วลากเพื่อหมุน 360° • 2 นิ้วถ่างเพื่อซูม</div>
     </div>
 
     <div class="top-actions">
-      <!-- Toggle Clean / Minimal UI -->
       <button class="icon-btn" id="btnToggleMinimal" title="ซ่อน/แสดงแถบข้อมูล (โหมดคลีน)">
         <span id="minimalIcon">👁️</span>
         <span class="btn-label" id="minimalText">โหมดคลีน</span>
@@ -448,7 +434,6 @@
     </div>
   </div>
 
-  <!-- Loading Overlay -->
   <div class="loading-overlay" id="loadingOverlay">
     <div class="spinner"></div>
     <div class="loading-text" id="loadingText">กำลังโหลดโมเดล 3D... 0%</div>
@@ -457,7 +442,6 @@
     </div>
   </div>
 
-  <!-- Main 3D Viewer Component -->
   <model-viewer
     id="viewer"
     src=""
@@ -481,30 +465,20 @@
     </button>
   </model-viewer>
 
-  <!-- Bottom Switcher Bar -->
   <div class="bottom-bar">
     <div class="touch-hint">👆 ลากเพื่อหมุนดู 360° • 🤏 ถ่าง 2 นิ้วเพื่อซูม • เลือกสลับโมเดลด้านล่าง</div>
     <div class="switcher-dock" id="switcherDock">
       <button class="model-tab" data-id="utility_pole">
         <span class="tab-icon">⚡</span>
-        <span>เสาไฟฟ้าริมถนน</span>
-      </button>
-      <button class="model-tab" data-id="lineman_viaduct">
-        <span class="tab-icon">👷</span>
-        <span>ช่างไฟ & สะพานลอย</span>
+        <span>เสาไฟฟ้าริมถนน (กทม.)</span>
       </button>
       <button class="model-tab" data-id="ee_building">
         <span class="tab-icon">🏢</span>
-        <span>ตึกวิศวกรรมไฟฟ้า</span>
-      </button>
-      <button class="model-tab" data-id="electrician">
-        <span class="tab-icon">🧰</span>
-        <span>ตัวละครช่างไฟ</span>
+        <span>อาคารวิศวกรรมไฟฟ้า</span>
       </button>
     </div>
   </div>
 
-  <!-- QR Modal for Current Model -->
   <div class="modal-backdrop" id="qrModal">
     <div class="qr-modal">
       <h3 id="qrModalTitle">QR Code โมเดลนี้</h3>
@@ -513,7 +487,7 @@
       <div class="qr-url-preview" id="qrUrlText"></div>
       <div class="modal-actions">
         <button class="btn-primary" id="btnDownloadQR">⬇️ ดาวน์โหลด QR (.png)</button>
-        <a class="btn-secondary" href="qr.html">🖨️ หน้าพิมพ์ครบ 4 โมเดล</a>
+        <a class="btn-secondary" href="qr.html">🖨️ หน้าพิมพ์ QR ทั้งหมด</a>
         <button class="btn-secondary" id="btnCloseModal">ปิด</button>
       </div>
     </div>
@@ -524,30 +498,16 @@
       utility_pole: {
         index: 1,
         title: "เสาไฟฟ้าริมถนนและสภาพแวดล้อม (กทม.)",
-        desc: "จำลองระบบจำหน่ายไฟฟ้า หม้อแปลง สายไฟ ป้ายซอย และอาคารพาณิชย์ริมถนน",
+        desc: "จำลองระบบจำหน่ายไฟฟ้า หม้อแปลง สายไฟ ป้ายซอย และอาคารพาณิชย์ริมถนน (พร้อมสีและพื้นผิวจริง)",
         file: "models/bkk_utility_pole_street.glb",
         orbit: "35deg 72deg 105%"
       },
-      lineman_viaduct: {
-        index: 2,
-        title: "ช่างไฟฟ้าปฏิบัติงานและสะพานลอย",
-        desc: "จำลองการปฏิบัติงานของช่างไฟฟ้าพร้อมอุปกรณ์นิรภัยบนเสาไฟฟ้าใกล้โครงสร้างสะพาน",
-        file: "models/bkk_lineman_viaduct.glb",
-        orbit: "40deg 75deg 105%"
-      },
       ee_building: {
-        index: 3,
+        index: 2,
         title: "อาคารวิศวกรรมไฟฟ้า (Electrical Engineering Building)",
-        desc: "โมเดลสถาปัตยกรรมอาคารเรียนและปฏิบัติการวิศวกรรมไฟฟ้าแบบ 3 มิติ",
+        desc: "โมเดลสถาปัตยกรรมอาคารเรียนและปฏิบัติการวิศวกรรมไฟฟ้าแบบ 3 มิติ (พร้อมสีและพื้นผิวจริง)",
         file: "models/electrical_engineering_building.glb",
         orbit: "-35deg 70deg 110%"
-      },
-      electrician: {
-        index: 4,
-        title: "ตัวละครช่างไฟฟ้าและชุดอุปกรณ์เซฟตี้ (PPE)",
-        desc: "ชุดปฏิบัติงานช่างไฟฟ้า หมวกนิรภัย แว่นเซฟตี้ ถุงมือ เข็มขัดเครื่องมือ และมัลติมิเตอร์",
-        file: "models/electrician_character.glb",
-        orbit: "20deg 78deg 105%"
       }
     };
 
@@ -576,22 +536,18 @@
       currentKey = key;
       const item = MODELS[key];
 
-      // Update UI text
-      modelBadge.textContent = `MODEL ${item.index} / 4`;
+      modelBadge.textContent = `MODEL ${item.index} / 2`;
       modelTitle.textContent = item.title;
       modelDesc.textContent = item.desc;
 
-      // Highlight active tab
       tabs.forEach(btn => {
         btn.classList.toggle('active', btn.dataset.id === key);
       });
 
-      // Show loading state
       loadingOverlay.classList.remove('hidden');
       loadingText.textContent = `กำลังโหลด ${item.title}... 0%`;
       progressFill.style.width = '0%';
 
-      // Load GLB
       viewer.src = item.file;
       viewer.cameraOrbit = item.orbit;
 
@@ -602,7 +558,6 @@
       }
     }
 
-    // Track loading progress
     viewer.addEventListener('progress', (e) => {
       const pct = Math.round((e.detail.totalProgress || 0) * 100);
       progressFill.style.width = `${pct}%`;
@@ -620,14 +575,12 @@
       loadingText.textContent = 'เกิดข้อผิดพลาดในการโหลดไฟล์โมเดล 3D';
     });
 
-    // Tab clicks
     tabs.forEach(btn => {
       btn.addEventListener('click', () => {
         selectModel(btn.dataset.id);
       });
     });
 
-    // Minimal mode toggle
     const btnToggleMinimal = document.getElementById('btnToggleMinimal');
     const minimalText = document.getElementById('minimalText');
     btnToggleMinimal.addEventListener('click', () => {
@@ -637,7 +590,6 @@
       minimalText.textContent = isMinimal ? 'แสดงเครื่องมือ' : 'โหมดคลีน';
     });
 
-    // Auto-rotate toggle
     const btnAutoRotate = document.getElementById('btnAutoRotate');
     btnAutoRotate.addEventListener('click', () => {
       isAutoRotate = !isAutoRotate;
@@ -649,7 +601,6 @@
       btnAutoRotate.classList.toggle('active', isAutoRotate);
     });
 
-    // Reset camera
     document.getElementById('btnResetCam').addEventListener('click', () => {
       const item = MODELS[currentKey];
       viewer.cameraTarget = 'auto auto auto';
@@ -657,7 +608,6 @@
       viewer.fieldOfView = 'auto';
     });
 
-    // QR Code Modal Logic
     const qrModal = document.getElementById('qrModal');
     const qrContainer = document.getElementById('qrContainer');
     const qrUrlText = document.getElementById('qrUrlText');
@@ -688,7 +638,6 @@
       if (e.target === qrModal) qrModal.classList.remove('open');
     });
 
-    // Download QR PNG
     document.getElementById('btnDownloadQR').addEventListener('click', () => {
       const canvas = qrContainer.querySelector('canvas');
       const img = qrContainer.querySelector('img');
@@ -700,7 +649,6 @@
       a.click();
     });
 
-    // Initialize from URL query parameter (?model=... & ?minimal=1)
     const params = new URLSearchParams(window.location.search);
     const initialModel = params.get('model') || 'utility_pole';
     if (params.get('minimal') === '1') {
