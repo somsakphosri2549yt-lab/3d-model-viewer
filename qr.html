@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ศูนย์รวม QR Code โมเดล 3 มิติ (สำหรับสแกนและพิมพ์ใบงาน A4)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&family=Sarabun:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --border: rgba(255, 255, 255, 0.12);
+      --accent: #38bdf8;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Prompt', 'Sarabun', sans-serif;
+      min-height: 100vh;
+      padding: 28px 16px 60px;
+    }
+
+    .container {
+      max-width: 1040px;
+      margin: 0 auto;
+    }
+
+    .header-box {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 20px 24px;
+      margin-bottom: 24px;
+    }
+
+    .header-title h1 {
+      font-size: 1.35rem;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+
+    .header-title p {
+      font-family: 'Sarabun', sans-serif;
+      font-size: 0.92rem;
+      color: var(--muted);
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 16px;
+      border-radius: 11px;
+      font-family: 'Prompt', sans-serif;
+      font-size: 0.86rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      border: 1px solid transparent;
+      transition: all 0.2s ease;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #090d16;
+    }
+
+    .btn-outline {
+      background: rgba(255, 255, 255, 0.06);
+      color: #fff;
+      border-color: var(--border);
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.08);
+    }
+
+    /* Base URL Bar */
+    .url-config {
+      background: rgba(30, 41, 59, 0.65);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px 18px;
+      margin-bottom: 24px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .url-config label {
+      font-size: 0.85rem;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    .url-config input {
+      flex: 1;
+      min-width: 240px;
+      background: #090d16;
+      border: 1px solid var(--border);
+      color: var(--accent);
+      padding: 9px 13px;
+      border-radius: 9px;
+      font-family: monospace;
+      font-size: 0.88rem;
+    }
+
+    /* QR Grid */
+    .qr-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+      gap: 18px;
+    }
+
+    .qr-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+    }
+
+    .qr-badge {
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--accent);
+      background: rgba(56, 189, 248, 0.14);
+      padding: 3px 10px;
+      border-radius: 999px;
+      margin-bottom: 8px;
+    }
+
+    .qr-card h2 {
+      font-size: 1.05rem;
+      color: #fff;
+      margin-bottom: 4px;
+      line-height: 1.35;
+    }
+
+    .qr-card p {
+      font-family: 'Sarabun', sans-serif;
+      font-size: 0.83rem;
+      color: var(--muted);
+      margin-bottom: 14px;
+      min-height: 36px;
+    }
+
+    .qr-canvas-wrap {
+      background: #ffffff;
+      padding: 16px;
+      border-radius: 14px;
+      margin-bottom: 12px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .qr-link-box {
+      font-family: monospace;
+      font-size: 0.73rem;
+      color: var(--accent);
+      background: rgba(15, 23, 42, 0.7);
+      padding: 7px 10px;
+      border-radius: 8px;
+      width: 100%;
+      word-break: break-all;
+      margin-bottom: 14px;
+    }
+
+    .card-actions {
+      display: flex;
+      gap: 8px;
+      width: 100%;
+      justify-content: center;
+    }
+
+    .card-actions .btn {
+      flex: 1;
+      justify-content: center;
+      font-size: 0.78rem;
+      padding: 8px 10px;
+    }
+
+    /* Print A4 Styles */
+    @media print {
+      body {
+        background: #ffffff !important;
+        color: #000000 !important;
+        padding: 0;
+      }
+      .header-actions, .url-config, .card-actions {
+        display: none !important;
+      }
+      .header-box {
+        background: none !important;
+        border: none !important;
+        border-bottom: 2px solid #000 !important;
+        border-radius: 0 !important;
+        padding: 0 0 10px 0 !important;
+        margin-bottom: 16px !important;
+      }
+      .header-title h1, .header-title p {
+        color: #000 !important;
+      }
+      .qr-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 14px !important;
+      }
+      .qr-card {
+        background: #fff !important;
+        border: 1.5px solid #000 !important;
+        box-shadow: none !important;
+        page-break-inside: avoid;
+        padding: 14px !important;
+      }
+      .qr-card h2, .qr-card p, .qr-link-box, .qr-badge {
+        color: #000 !important;
+        background: none !important;
+      }
+      .qr-canvas-wrap {
+        border: 1px solid #ddd;
+        padding: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header-box">
+      <div class="header-title">
+        <h1>📱 ศูนย์รวม QR Code สแกนดูโมเดล 3 มิติ (หมุนดูได้ 360°)</h1>
+        <p>สแกนด้วยกล้องมือถือหรือแอป LINE เพื่อเปิดโมเดล 3 มิติและหมุนดูได้ทุกมุมทันที</p>
+      </div>
+      <div class="header-actions">
+        <a class="btn btn-outline" href="index.html">⬅️ กลับหน้า 3D Viewer</a>
+        <button class="btn btn-primary" onclick="window.print()">🖨️ พิมพ์ใบ QR Code (A4)</button>
+      </div>
+    </div>
+
+    <div class="url-config">
+      <label for="baseUrlInput">🔗 ลิงก์เว็บไซต์หลัก (Base URL):</label>
+      <input type="text" id="baseUrlInput" value="" />
+      <button class="btn btn-outline" id="btnUpdateQR">อัปเดต QR Code</button>
+    </div>
+
+    <div class="qr-grid" id="qrGrid"></div>
+  </div>
+
+  <script>
+    const ITEMS = [
+      {
+        id: "all",
+        badge: "หน้าหลัก (รวมทั้ง 4 โมเดล)",
+        title: "รวมโมเดล 3 มิติทั้งหมด (3D Gallery)",
+        desc: "สแกนเพื่อเข้าสู่หน้าหลักและกดเลือกสลับดูได้ทั้ง 4 โมเดลในลิงก์เดียว",
+        query: ""
+      },
+      {
+        id: "utility_pole",
+        badge: "โมเดลที่ 1",
+        title: "เสาไฟฟ้าริมถนนและสภาพแวดล้อม (กทม.)",
+        desc: "จำลองระบบจำหน่ายไฟฟ้า หม้อแปลง สายไฟ ป้ายซอย และอาคารพาณิชย์ริมถนน",
+        query: "?model=utility_pole"
+      },
+      {
+        id: "lineman_viaduct",
+        badge: "โมเดลที่ 2",
+        title: "ช่างไฟฟ้าปฏิบัติงานและสะพานลอย",
+        desc: "จำลองการปฏิบัติงานของช่างไฟฟ้าพร้อมอุปกรณ์นิรภัยบนเสาไฟฟ้า",
+        query: "?model=lineman_viaduct"
+      },
+      {
+        id: "ee_building",
+        badge: "โมเดลที่ 3",
+        title: "อาคารวิศวกรรมไฟฟ้า",
+        desc: "โมเดลสถาปัตยกรรมอาคารเรียนและปฏิบัติการวิศวกรรมไฟฟ้าแบบ 3 มิติ",
+        query: "?model=ee_building"
+      },
+      {
+        id: "electrician",
+        badge: "โมเดลที่ 4",
+        title: "ตัวละครช่างไฟฟ้า (ชุดอุปกรณ์ PPE)",
+        desc: "ชุดปฏิบัติงานช่างไฟฟ้า หมวกนิรภัย แว่นเซฟตี้ ถุงมือ และเข็มขัดเครื่องมือ",
+        query: "?model=electrician"
+      }
+    ];
+
+    const baseUrlInput = document.getElementById('baseUrlInput');
+    const qrGrid = document.getElementById('qrGrid');
+
+    function detectViewerBaseUrl() {
+      const loc = window.location.href.split('?')[0].split('#')[0];
+      if (loc.endsWith('qr.html')) {
+        return loc.replace(/qr\.html$/, 'index.html');
+      }
+      if (loc.endsWith('/')) {
+        return loc + 'index.html';
+      }
+      return loc;
+    }
+
+    function renderAllQRCodes() {
+      const base = baseUrlInput.value.trim();
+      qrGrid.innerHTML = '';
+
+      ITEMS.forEach(item => {
+        const fullUrl = `${base}${item.query}`;
+        const card = document.createElement('div');
+        card.className = 'qr-card';
+        card.innerHTML = `
+          <span class="qr-badge">${item.badge}</span>
+          <h2>${item.title}</h2>
+          <p>${item.desc}</p>
+          <div class="qr-canvas-wrap" id="qr_${item.id}"></div>
+          <div class="qr-link-box">${fullUrl}</div>
+          <div class="card-actions">
+            <button class="btn btn-primary" data-dl="${item.id}" data-title="${item.title}">⬇️ ดาวน์โหลด PNG</button>
+            <a class="btn btn-outline" href="index.html${item.query}">👁️ เปิดดูโมเดล</a>
+          </div>
+        `;
+        qrGrid.appendChild(card);
+
+        const qrBox = card.querySelector(`#qr_${item.id}`);
+        new QRCode(qrBox, {
+          text: fullUrl,
+          width: 190,
+          height: 190,
+          colorDark: "#000000",
+          colorLight: "#ffffff",
+          correctLevel: QRCode.CorrectLevel.M
+        });
+      });
+
+      // Attach download handlers
+      document.querySelectorAll('[data-dl]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const id = btn.getAttribute('data-dl');
+          const box = document.getElementById(`qr_${id}`);
+          const canvas = box.querySelector('canvas');
+          const img = box.querySelector('img');
+          const dataUrl = canvas ? canvas.toDataURL('image/png') : (img ? img.src : null);
+          if (!dataUrl) return;
+          const a = document.createElement('a');
+          a.href = dataUrl;
+          a.download = `QR_3D_${id}.png`;
+          a.click();
+        });
+      });
+    }
+
+    baseUrlInput.value = detectViewerBaseUrl();
+    renderAllQRCodes();
+
+    document.getElementById('btnUpdateQR').addEventListener('click', renderAllQRCodes);
+    baseUrlInput.addEventListener('change', renderAllQRCodes);
+  </script>
+</body>
+</html>
