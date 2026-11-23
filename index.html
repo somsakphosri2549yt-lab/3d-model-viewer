@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>3D Model Viewer - ระบบดูโมเดล 3 มิติ 360°</title>
+  <title>3D Model Viewer - ระบบดูโมเดล 3 มิติ 360° หลายมุมมอง</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&family=Sarabun:wght@400;500;600&display=swap" rel="stylesheet">
@@ -16,6 +16,7 @@
       --border-glass: rgba(255, 255, 255, 0.14);
       --accent: #38bdf8;
       --accent-glow: rgba(56, 189, 248, 0.25);
+      --accent-poi: #a855f7;
       --text-main: #f8fafc;
       --text-sub: #94a3b8;
     }
@@ -44,11 +45,12 @@
       outline: none;
     }
 
+    /* Top Bar */
     .top-bar {
       position: fixed;
-      top: 14px;
-      left: 14px;
-      right: 14px;
+      top: 12px;
+      left: 12px;
+      right: 12px;
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
@@ -64,26 +66,26 @@
       -webkit-backdrop-filter: blur(12px);
       border: 1px solid var(--border-glass);
       border-radius: 14px;
-      padding: 10px 16px;
-      max-width: min(440px, calc(100vw - 120px));
+      padding: 10px 14px;
+      max-width: min(430px, calc(100vw - 115px));
       box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
       transition: opacity 0.25s ease, transform 0.25s ease;
     }
 
     .model-badge {
       display: inline-block;
-      font-size: 0.7rem;
+      font-size: 0.68rem;
       font-weight: 600;
       color: var(--accent);
       background: var(--accent-glow);
       padding: 2px 8px;
       border-radius: 999px;
-      margin-bottom: 4px;
+      margin-bottom: 3px;
       letter-spacing: 0.03em;
     }
 
     .model-title {
-      font-size: 1.05rem;
+      font-size: 1rem;
       font-weight: 600;
       line-height: 1.3;
       color: #fff;
@@ -91,17 +93,17 @@
 
     .model-desc {
       font-family: 'Sarabun', sans-serif;
-      font-size: 0.84rem;
+      font-size: 0.81rem;
       color: var(--text-sub);
-      margin-top: 3px;
-      line-height: 1.4;
+      margin-top: 2px;
+      line-height: 1.35;
     }
 
     .top-actions {
       pointer-events: auto;
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 7px;
       align-items: flex-end;
     }
 
@@ -111,11 +113,11 @@
       -webkit-backdrop-filter: blur(12px);
       border: 1px solid var(--border-glass);
       color: var(--text-main);
-      height: 40px;
-      padding: 0 13px;
-      border-radius: 12px;
+      height: 38px;
+      padding: 0 12px;
+      border-radius: 11px;
       font-family: 'Prompt', sans-serif;
-      font-size: 0.82rem;
+      font-size: 0.8rem;
       font-weight: 500;
       display: inline-flex;
       align-items: center;
@@ -135,45 +137,119 @@
     .tools-group {
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 7px;
       align-items: flex-end;
       transition: opacity 0.25s ease, transform 0.25s ease;
     }
 
     body.minimal-mode .model-info-card,
     body.minimal-mode .tools-group,
+    body.minimal-mode .camera-controls-panel,
     body.minimal-mode .touch-hint {
       opacity: 0;
       pointer-events: none;
-      transform: translateY(-8px);
+      transform: translateY(8px);
     }
 
+    /* Bottom Dock + Multi-Angle Camera Panel */
     .bottom-bar {
       position: fixed;
-      bottom: 16px;
+      bottom: 12px;
       left: 50%;
       transform: translateX(-50%);
       z-index: 20;
-      width: calc(100vw - 24px);
-      max-width: 480px;
+      width: calc(100vw - 20px);
+      max-width: 680px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 8px;
+      gap: 7px;
       pointer-events: none;
     }
 
     .touch-hint {
-      font-size: 0.75rem;
-      color: rgba(248, 250, 252, 0.7);
-      background: rgba(15, 23, 42, 0.65);
-      padding: 4px 12px;
+      font-size: 0.73rem;
+      color: rgba(248, 250, 252, 0.78);
+      background: rgba(15, 23, 42, 0.68);
+      padding: 3px 11px;
       border-radius: 999px;
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.1);
       backdrop-filter: blur(6px);
       transition: opacity 0.25s ease;
+      text-align: center;
     }
 
+    .camera-controls-panel {
+      pointer-events: auto;
+      width: 100%;
+      background: var(--bg-panel);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid var(--border-glass);
+      border-radius: 15px;
+      padding: 8px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+      transition: opacity 0.25s ease, transform 0.25s ease;
+    }
+
+    .cam-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      padding-bottom: 1px;
+    }
+
+    .cam-row::-webkit-scrollbar {
+      display: none;
+    }
+
+    .row-tag {
+      font-size: 0.68rem;
+      font-weight: 600;
+      color: var(--text-sub);
+      white-space: nowrap;
+      padding-right: 4px;
+      border-right: 1px solid rgba(255, 255, 255, 0.12);
+      flex-shrink: 0;
+    }
+
+    .cam-pill {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--text-main);
+      padding: 5px 10px;
+      border-radius: 999px;
+      font-family: 'Prompt', sans-serif;
+      font-size: 0.74rem;
+      font-weight: 500;
+      white-space: nowrap;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.18s ease;
+      flex-shrink: 0;
+    }
+
+    .cam-pill:hover, .cam-pill.active {
+      background: rgba(56, 189, 248, 0.22);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    .cam-pill.poi-pill:hover, .cam-pill.poi-pill.active {
+      background: rgba(168, 85, 247, 0.24);
+      border-color: #c084fc;
+      color: #fff;
+    }
+
+    /* Model Switcher Dock */
     .switcher-dock {
       pointer-events: auto;
       display: grid;
@@ -193,10 +269,10 @@
       background: transparent;
       border: 1px solid transparent;
       color: var(--text-sub);
-      padding: 10px 8px;
+      padding: 9px 8px;
       border-radius: 11px;
       font-family: 'Prompt', sans-serif;
-      font-size: 0.85rem;
+      font-size: 0.84rem;
       font-weight: 500;
       cursor: pointer;
       display: flex;
@@ -224,6 +300,35 @@
       box-shadow: 0 0 15px rgba(56, 189, 248, 0.2);
     }
 
+    /* Double-Tap Focus Ripple Indicator */
+    .focus-ripple {
+      position: fixed;
+      width: 44px;
+      height: 44px;
+      border: 2.5px solid var(--accent);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 30;
+      transform: translate(-50%, -50%) scale(0.3);
+      opacity: 0;
+    }
+
+    .focus-ripple.animate {
+      animation: pulseRipple 0.6s ease-out forwards;
+    }
+
+    @keyframes pulseRipple {
+      0% {
+        transform: translate(-50%, -50%) scale(0.3);
+        opacity: 1;
+      }
+      100% {
+        transform: translate(-50%, -50%) scale(1.6);
+        opacity: 0;
+      }
+    }
+
+    /* Loading Overlay */
     .loading-overlay {
       position: fixed;
       inset: 0;
@@ -280,21 +385,22 @@
 
     .ar-btn {
       position: fixed;
-      bottom: 95px;
-      right: 16px;
+      bottom: 185px;
+      right: 14px;
       background: linear-gradient(135deg, #0284c7, #2563eb);
       color: #fff;
       border: 1px solid rgba(255, 255, 255, 0.25);
       border-radius: 999px;
-      padding: 10px 18px;
+      padding: 9px 16px;
       font-family: 'Prompt', sans-serif;
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       font-weight: 600;
       box-shadow: 0 6px 20px rgba(37, 99, 235, 0.45);
       cursor: pointer;
       z-index: 25;
     }
 
+    /* QR Modal */
     .modal-backdrop {
       position: fixed;
       inset: 0;
@@ -391,20 +497,22 @@
     }
 
     @media (max-width: 480px) {
-      .model-title { font-size: 0.95rem; }
-      .model-desc { font-size: 0.78rem; }
-      .model-tab { font-size: 0.78rem; padding: 9px 6px; }
+      .model-title { font-size: 0.92rem; }
+      .model-desc { font-size: 0.75rem; }
+      .model-tab { font-size: 0.78rem; padding: 8px 6px; }
       .icon-btn span.btn-label { display: none; }
+      .cam-pill { font-size: 0.72rem; padding: 5px 9px; }
     }
   </style>
 </head>
 <body>
 
+  <!-- Top Bar -->
   <div class="top-bar">
     <div class="model-info-card">
       <span class="model-badge" id="modelBadge">MODEL 1 / 2</span>
       <div class="model-title" id="modelTitle">กำลังโหลดโมเดล...</div>
-      <div class="model-desc" id="modelDesc">ใช้ 1 นิ้วลากเพื่อหมุน 360° • 2 นิ้วถ่างเพื่อซูม</div>
+      <div class="model-desc" id="modelDesc">ลากหมุน 360° • แตะ 2 ครั้งที่ชิ้นส่วนใดก็ได้เพื่อซูมโฟกัสจุดนั้น</div>
     </div>
 
     <div class="top-actions">
@@ -434,6 +542,10 @@
     </div>
   </div>
 
+  <!-- Double-Tap Ripple -->
+  <div class="focus-ripple" id="focusRipple"></div>
+
+  <!-- Loading Overlay -->
   <div class="loading-overlay" id="loadingOverlay">
     <div class="spinner"></div>
     <div class="loading-text" id="loadingText">กำลังโหลดโมเดล 3D... 0%</div>
@@ -442,6 +554,7 @@
     </div>
   </div>
 
+  <!-- Unlocked 360-degree Multi-Angle Model Viewer -->
   <model-viewer
     id="viewer"
     src=""
@@ -449,24 +562,52 @@
     camera-controls
     touch-action="none"
     auto-rotate
-    auto-rotate-delay="1000"
-    rotation-per-second="18deg"
+    auto-rotate-delay="1500"
+    rotation-per-second="15deg"
+    interaction-prompt="none"
+    interpolation-decay="100"
+    min-camera-orbit="auto 0deg 0.4m"
+    max-camera-orbit="auto 180deg auto"
+    min-field-of-view="8deg"
+    max-field-of-view="90deg"
     shadow-intensity="1.1"
     shadow-softness="0.8"
     exposure="1.05"
     environment-image="neutral"
     ar
     ar-modes="webxr scene-viewer quick-look"
-    max-camera-orbit="auto 100deg auto"
-    min-camera-orbit="auto 0deg auto"
   >
     <button slot="ar-button" class="ar-btn">
       📷 วางโมเดลในสถานที่จริง (AR)
     </button>
   </model-viewer>
 
+  <!-- Bottom Multi-Angle Controls + Switcher -->
   <div class="bottom-bar">
-    <div class="touch-hint">👆 ลากเพื่อหมุนดู 360° • 🤏 ถ่าง 2 นิ้วเพื่อซูม • เลือกสลับโมเดลด้านล่าง</div>
+    <div class="touch-hint">👆 ลาก 1 นิ้วหมุน 360° • ✌️ ลาก 2 นิ้วเลื่อนตำแหน่ง • 🎯 แตะ 2 ครั้งบนโมเดลเพื่อย้ายจุดโฟกัส</div>
+
+    <div class="camera-controls-panel">
+      <!-- Row 1: 6 Standard Camera Directions + Zoom In/Out -->
+      <div class="cam-row" id="standardAnglesRow">
+        <span class="row-tag">🎥 มุมกล้อง</span>
+        <button class="cam-pill active" data-angle="iso">🧊 มุมเฉียง 3D</button>
+        <button class="cam-pill" data-angle="front">⬆️ ด้านหน้า</button>
+        <button class="cam-pill" data-angle="right">➡️ ด้านขวา</button>
+        <button class="cam-pill" data-angle="back">⬇️ ด้านหลัง</button>
+        <button class="cam-pill" data-angle="left">⬅️ ด้านซ้าย</button>
+        <button class="cam-pill" data-angle="top">🦅 มุมสูง (Top)</button>
+        <button class="cam-pill" data-angle="low">📐 มุมเสย</button>
+        <button class="cam-pill" id="btnZoomIn">➕ ซูมเข้า</button>
+        <button class="cam-pill" id="btnZoomOut">➖ ซูมออก</button>
+      </div>
+
+      <!-- Row 2: Model-Specific Point-of-Interest Zoom Presets -->
+      <div class="cam-row" id="poiRow">
+        <span class="row-tag">🔍 จุดสำคัญ</span>
+        <div id="poiButtonsContainer" style="display:flex; gap:6px;"></div>
+      </div>
+    </div>
+
     <div class="switcher-dock" id="switcherDock">
       <button class="model-tab" data-id="utility_pole">
         <span class="tab-icon">⚡</span>
@@ -479,6 +620,7 @@
     </div>
   </div>
 
+  <!-- QR Modal -->
   <div class="modal-backdrop" id="qrModal">
     <div class="qr-modal">
       <h3 id="qrModalTitle">QR Code โมเดลนี้</h3>
@@ -498,16 +640,94 @@
       utility_pole: {
         index: 1,
         title: "เสาไฟฟ้าริมถนนและสภาพแวดล้อม (กทม.)",
-        desc: "จำลองระบบจำหน่ายไฟฟ้า หม้อแปลง สายไฟ ป้ายซอย และอาคารพาณิชย์ริมถนน (พร้อมสีและพื้นผิวจริง)",
+        desc: "หมุนดูได้ 360° ทุกมุม • กดปุ่ม 'จุดสำคัญ' ด้านล่าง หรือแตะ 2 ครั้งบนตัวโมเดลเพื่อซูมเฉพาะจุด",
         file: "models/bkk_utility_pole_street.glb",
-        orbit: "35deg 72deg 105%"
+        defaultTarget: "-5.5m 6.0m -4.3m",
+        defaultOrbit: "38deg 74deg 18m",
+        defaultFov: "36deg",
+        pois: [
+          {
+            id: "hero_pole",
+            label: "⚡ เสาไฟ & หม้อแปลงหลัก",
+            target: "-5.43m 7.11m -4.50m",
+            orbit: "42deg 76deg 8.5m",
+            fov: "30deg"
+          },
+          {
+            id: "pole_top",
+            label: "🔌 ยอดเสา & สายไฟแรงสูง",
+            target: "-5.50m 10.50m -4.34m",
+            orbit: "30deg 104deg 6.5m",
+            fov: "28deg"
+          },
+          {
+            id: "soi_busstop",
+            label: "🪧 ป้ายซอย & ป้ายรถเมล์",
+            target: "-6.80m 2.10m -4.50m",
+            orbit: "55deg 82deg 11m",
+            fov: "35deg"
+          },
+          {
+            id: "shophouses",
+            label: "🏪 ตึกแถว & ป้ายร้านค้าไทย",
+            target: "-8.93m 5.52m 6.00m",
+            orbit: "75deg 78deg 16m",
+            fov: "38deg"
+          },
+          {
+            id: "overpass_full",
+            label: "🌉 สะพานลอย & ภาพรวมถนน",
+            target: "0.35m 4.27m -28.00m",
+            orbit: "25deg 68deg 55m",
+            fov: "42deg"
+          }
+        ]
       },
       ee_building: {
         index: 2,
         title: "อาคารวิศวกรรมไฟฟ้า (Electrical Engineering Building)",
-        desc: "โมเดลสถาปัตยกรรมอาคารเรียนและปฏิบัติการวิศวกรรมไฟฟ้าแบบ 3 มิติ (พร้อมสีและพื้นผิวจริง)",
+        desc: "หมุนดูได้ 360° ทุกมุม • กดปุ่ม 'จุดสำคัญ' ด้านล่าง หรือแตะ 2 ครั้งบนตัวอาคารเพื่อซูมเฉพาะจุด",
         file: "models/electrical_engineering_building.glb",
-        orbit: "-35deg 70deg 110%"
+        defaultTarget: "0m 8.5m 2.0m",
+        defaultOrbit: "-32deg 72deg 42m",
+        defaultFov: "36deg",
+        pois: [
+          {
+            id: "main_facade",
+            label: "🏢 ด้านหน้าอาคารหลัก",
+            target: "0.0m 9.25m 6.85m",
+            orbit: "0deg 76deg 32m",
+            fov: "35deg"
+          },
+          {
+            id: "main_entrance",
+            label: "🚪 โถงทางเข้าหน้าตึก",
+            target: "0.06m 2.20m 6.85m",
+            orbit: "12deg 83deg 11m",
+            fov: "30deg"
+          },
+          {
+            id: "rooftop_sign",
+            label: "🪧 ป้ายชื่ออาคาร & ชั้นบน",
+            target: "4.80m 17.50m 7.40m",
+            orbit: "-15deg 82deg 16m",
+            fov: "28deg"
+          },
+          {
+            id: "front_busstop",
+            label: "🚏 ป้ายรถเมล์ & ลานหน้าตึก",
+            target: "10.50m 1.60m 11.70m",
+            orbit: "28deg 82deg 10m",
+            fov: "34deg"
+          },
+          {
+            id: "aerial_campus",
+            label: "🚁 มุมสูงดาดฟ้า & เมืองรอบข้าง",
+            target: "0m 10m 0m",
+            orbit: "-45deg 38deg 85m",
+            fov: "42deg"
+          }
+        ]
       }
     };
 
@@ -519,6 +739,9 @@
     const modelTitle = document.getElementById('modelTitle');
     const modelDesc = document.getElementById('modelDesc');
     const tabs = document.querySelectorAll('.model-tab');
+    const poiButtonsContainer = document.getElementById('poiButtonsContainer');
+    const angleButtons = document.querySelectorAll('[data-angle]');
+    const focusRipple = document.getElementById('focusRipple');
 
     let currentKey = 'utility_pole';
     let isMinimal = false;
@@ -529,6 +752,34 @@
       url.search = '';
       url.hash = '';
       return url.toString();
+    }
+
+    function pauseAutoRotateTemporarily() {
+      if (isAutoRotate) {
+        viewer.removeAttribute('auto-rotate');
+        clearTimeout(window._autoRotateTimer);
+        window._autoRotateTimer = setTimeout(() => {
+          if (isAutoRotate) viewer.setAttribute('auto-rotate', '');
+        }, 5000);
+      }
+    }
+
+    function renderPoiButtons(item) {
+      poiButtonsContainer.innerHTML = '';
+      item.pois.forEach((poi, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'cam-pill poi-pill' + (idx === 0 ? ' active' : '');
+        btn.textContent = poi.label;
+        btn.addEventListener('click', () => {
+          pauseAutoRotateTemporarily();
+          document.querySelectorAll('.poi-pill').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          viewer.cameraTarget = poi.target;
+          viewer.cameraOrbit = poi.orbit;
+          viewer.fieldOfView = poi.fov || '35deg';
+        });
+        poiButtonsContainer.appendChild(btn);
+      });
     }
 
     function selectModel(key, updateHistory = true) {
@@ -544,12 +795,16 @@
         btn.classList.toggle('active', btn.dataset.id === key);
       });
 
+      renderPoiButtons(item);
+
       loadingOverlay.classList.remove('hidden');
       loadingText.textContent = `กำลังโหลด ${item.title}... 0%`;
       progressFill.style.width = '0%';
 
       viewer.src = item.file;
-      viewer.cameraOrbit = item.orbit;
+      viewer.cameraTarget = item.defaultTarget;
+      viewer.cameraOrbit = item.defaultOrbit;
+      viewer.fieldOfView = item.defaultFov;
 
       if (updateHistory) {
         const newUrl = new URL(window.location.href);
@@ -557,6 +812,94 @@
         window.history.replaceState({}, '', newUrl);
       }
     }
+
+    // Standard 6-Direction Camera Angle Presets (keeps current target & radius)
+    angleButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        pauseAutoRotateTemporarily();
+        angleButtons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        const angleType = btn.dataset.angle;
+        const orbit = viewer.getCameraOrbit();
+        const r = orbit.radius ? `${orbit.radius}m` : '25m';
+
+        const presets = {
+          iso:   `35deg 70deg ${r}`,
+          front: `0deg 78deg ${r}`,
+          right: `90deg 78deg ${r}`,
+          back:  `180deg 78deg ${r}`,
+          left:  `-90deg 78deg ${r}`,
+          top:   `0deg 12deg ${r}`,
+          low:   `25deg 108deg ${r}`
+        };
+
+        if (presets[angleType]) {
+          viewer.cameraOrbit = presets[angleType];
+        }
+      });
+    });
+
+    // Zoom In / Zoom Out buttons
+    document.getElementById('btnZoomIn').addEventListener('click', () => {
+      pauseAutoRotateTemporarily();
+      const orbit = viewer.getCameraOrbit();
+      const newR = Math.max(1.0, orbit.radius * 0.65);
+      viewer.cameraOrbit = `${orbit.theta}rad ${orbit.phi}rad ${newR}m`;
+    });
+
+    document.getElementById('btnZoomOut').addEventListener('click', () => {
+      pauseAutoRotateTemporarily();
+      const orbit = viewer.getCameraOrbit();
+      const newR = orbit.radius * 1.45;
+      viewer.cameraOrbit = `${orbit.theta}rad ${orbit.phi}rad ${newR}m`;
+    });
+
+    // Double-Tap / Double-Click on any 3D surface to move camera target there
+    let lastTapTime = 0;
+    let lastTapX = 0;
+    let lastTapY = 0;
+
+    function focusAtScreenPoint(clientX, clientY) {
+      if (typeof viewer.positionAndNormalFromPoint !== 'function') return;
+      const hit = viewer.positionAndNormalFromPoint(clientX, clientY);
+      if (!hit || !hit.position) return;
+
+      pauseAutoRotateTemporarily();
+
+      // Visual ripple feedback
+      focusRipple.style.left = `${clientX}px`;
+      focusRipple.style.top = `${clientY}px`;
+      focusRipple.classList.remove('animate');
+      void focusRipple.offsetWidth;
+      focusRipple.classList.add('animate');
+
+      const pos = hit.position;
+      viewer.cameraTarget = `${pos.x.toFixed(2)}m ${pos.y.toFixed(2)}m ${pos.z.toFixed(2)}m`;
+
+      const orbit = viewer.getCameraOrbit();
+      const targetRadius = Math.max(2.5, Math.min(orbit.radius * 0.65, 16));
+      viewer.cameraOrbit = `${orbit.theta}rad ${orbit.phi}rad ${targetRadius}m`;
+    }
+
+    viewer.addEventListener('dblclick', (e) => {
+      focusAtScreenPoint(e.clientX, e.clientY);
+    });
+
+    viewer.addEventListener('pointerup', (e) => {
+      if (e.pointerType !== 'touch') return;
+      const now = Date.now();
+      const dx = Math.abs(e.clientX - lastTapX);
+      const dy = Math.abs(e.clientY - lastTapY);
+      if (now - lastTapTime < 320 && dx < 30 && dy < 30) {
+        focusAtScreenPoint(e.clientX, e.clientY);
+        lastTapTime = 0;
+      } else {
+        lastTapTime = now;
+        lastTapX = e.clientX;
+        lastTapY = e.clientY;
+      }
+    });
 
     viewer.addEventListener('progress', (e) => {
       const pct = Math.round((e.detail.totalProgress || 0) * 100);
@@ -569,6 +912,10 @@
 
     viewer.addEventListener('load', () => {
       loadingOverlay.classList.add('hidden');
+      const item = MODELS[currentKey];
+      viewer.cameraTarget = item.defaultTarget;
+      viewer.cameraOrbit = item.defaultOrbit;
+      viewer.fieldOfView = item.defaultFov;
     });
 
     viewer.addEventListener('error', () => {
@@ -603,9 +950,9 @@
 
     document.getElementById('btnResetCam').addEventListener('click', () => {
       const item = MODELS[currentKey];
-      viewer.cameraTarget = 'auto auto auto';
-      viewer.cameraOrbit = item.orbit;
-      viewer.fieldOfView = 'auto';
+      viewer.cameraTarget = item.defaultTarget;
+      viewer.cameraOrbit = item.defaultOrbit;
+      viewer.fieldOfView = item.defaultFov;
     });
 
     const qrModal = document.getElementById('qrModal');
